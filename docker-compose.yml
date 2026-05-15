@@ -1,0 +1,35 @@
+# === FSSQ 风生水起 docker-compose.yml ===
+version: "3.9"
+
+services:
+  fssq:
+    build: .
+    container_name: fssq-engine
+    restart: unless-stopped
+    environment:
+      - PYTHONPATH=/app/src
+      - PYTHONUNBUFFERED=1
+      - TZ=Asia/Shanghai
+    volumes:
+      # 持久化输出报告
+      - ./output:/app/output
+    ports:
+      # 未来Web服务用
+      - "8000:8000"
+    # 默认CLI模式；Phase 2改为 uvicorn src.api.main:app
+    command: ["python3", "run_pipeline.py", "--help"]
+
+  # === Phase 4: 富途OpenD（当前不启用） ===
+  # futu-opend:
+  #   image: futuopen/ftd:latest
+  #   container_name: fssq-futu-opend
+  #   restart: unless-stopped
+  #   ports:
+  #     - "11111:11111"
+  #   volumes:
+  #     - futu-data:/root/.futunn
+  #   environment:
+  #     - TZ=Asia/Shanghai
+
+# volumes:
+#   futu-data:

@@ -1,0 +1,24 @@
+# === FSSQ 风生水起 — Python 依赖 ===
+
+# === 必需依赖（核心功能） ===
+sxtwl>=2.0.7            # 万年历查表 — 日柱/月柱/节气精确计算（无降级路径，必须安装）
+
+# === 可选依赖（SnipeScore 8维评分） ===
+requests>=2.28.0        # HTTP 行情API调用（东方财富/腾讯/新浪）
+urllib3>=2.0            # HTTPS 连接支持（requests依赖）
+
+# === 可选依赖（K线数据 fallback） ===
+akshare>=1.12.0         # A股K线历史数据（第4级兜底）
+
+# === 可选依赖（起运精确计算） ===
+python-dateutil>=2.8.0  # relativedelta（精确起运日期计算）
+
+# === 推荐依赖（占星真实历表） ===
+pyswisseph>=2.10.0      # Swiss Ephemeris 真实行星历表（已安装：2.10.3.2）
+
+# === Phase 2：Web API 服务（已激活） ===
+fastapi>=0.100          # Web API框架
+uvicorn>=0.23           # ASGI服务器（启动命令：uvicorn src.api.main:app --port 8080）
+
+# === 未来依赖（Phase 4，当前不安装） ===
+# futu-api>=9.0          # 富途OpenD交易接口

@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.Python
+*.egg-info/
+.eggs/
+dist/
+build/
+*.whl
+
+# 虚拟环境
+venv/
+env/
+.venv/
+
+# 数据文件
+*.csv.tmp
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 临时文件
+*.log
+*.tmp
+tmp/
+temp/
+
+# 测试报告（不上传）
+output/
+src/output/
+src/data/*.tmp
+
+# 部署脚本（本地使用）
+deploy.sh
+deploy_fssq.sh
+
+# .workbuddy（内部元数据）
+.workbuddy/
