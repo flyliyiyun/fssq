@@ -8,9 +8,6 @@ FSSQ run_pipeline.py — 端到端Pipeline统一入口
   # 1974男命（Golden Test Case）
   python3 run_pipeline.py --birth 1974-07-05 --hour 17 --gender 男 --place 开封 --year 2026 --current 旧金山
 
-  # Christina（甲木日主）
-  python3 run_pipeline.py --birth 1986-09-17 --hour 21 --gender 女 --place 厦门 --year 2026 --current 深圳
-
   # 只指定必需参数
   python3 run_pipeline.py --birth 1990-05-15 --hour 8 --gender 女
 
@@ -686,7 +683,6 @@ def main():
         epilog="""
 示例:
   python3 run_pipeline.py --birth 1974-07-05 --hour 17 --gender 男 --place 开封 --year 2026 --current 旧金山
-  python3 run_pipeline.py --birth 1986-09-17 --hour 21 --gender 女 --place 厦门 --year 2026 --current 深圳
   python3 run_pipeline.py --birth 1990-05-15 --hour 8 --gender 女 --output ./output
   python3 run_pipeline.py --birth 1974-07-05 --hour 17 --gender 男 --place 开封 --snipe 0  # 禁用SnipeScore
         """
