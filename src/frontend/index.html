@@ -125,6 +125,7 @@ body::before {
   width: 200%; height: 200%;
   background: radial-gradient(circle, rgba(212,168,67,0.03) 0%, transparent 50%);
   animation: shimmer 8s ease-in-out infinite;
+  pointer-events: none;
 }
 @keyframes shimmer {
   0%, 100% { transform: translate(0, 0); }
@@ -626,30 +627,18 @@ input[type="date"]::-webkit-calendar-picker-indicator {
       <div class="form-group">
         <label class="form-label">出生时辰</label>
         <select id="birth_hour" class="form-select">
-          <option value="0">子时 (23-1)</option>
-          <option value="1">丑时 (1-3)</option>
-          <option value="2">寅时 (3-5)</option>
-          <option value="3" selected>寅时 (3-5)</option>
-          <option value="4" selected>寅时 (3-5)</option>
-          <option value="5">卯时 (5-7)</option>
-          <option value="6">辰时 (7-9)</option>
-          <option value="7">巳时 (9-11)</option>
-          <option value="8">午时 (11-13)</option>
-          <option value="9">未时 (13-15)</option>
-          <option value="10">申时 (15-17)</option>
-          <option value="11">酉时 (17-19)</option>
-          <option value="12">戌时 (19-21)</option>
-          <option value="13">亥时 (21-23)</option>
-          <option value="14">子时 (23-1)</option>
-          <option value="15">丑时 (1-3)</option>
-          <option value="16">寅时 (3-5)</option>
-          <option value="17">卯时 (5-7)</option>
-          <option value="18">辰时 (7-9)</option>
-          <option value="19">巳时 (9-11)</option>
-          <option value="20">午时 (11-13)</option>
-          <option value="21">未时 (13-15)</option>
-          <option value="22">申时 (15-17)</option>
-          <option value="23">亥时 (21-23)</option>
+          <option value="23">子时 (23:00-00:59)</option>
+          <option value="1">丑时 (01:00-02:59)</option>
+          <option value="3" selected>寅时 (03:00-04:59)</option>
+          <option value="5">卯时 (05:00-06:59)</option>
+          <option value="7">辰时 (07:00-08:59)</option>
+          <option value="9">巳时 (09:00-10:59)</option>
+          <option value="11">午时 (11:00-12:59)</option>
+          <option value="13">未时 (13:00-14:59)</option>
+          <option value="15">申时 (15:00-16:59)</option>
+          <option value="17">酉时 (17:00-18:59)</option>
+          <option value="19">戌时 (19:00-20:59)</option>
+          <option value="21">亥时 (21:00-22:59)</option>
         </select>
       </div>
     </div>
@@ -735,24 +724,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 <script>
 const API_BASE = window.location.origin;
 
-// 时辰映射（简化）
-const HOUR_NAMES = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
-
-// 初始化时辰选择
-function initHourSelect() {
-  const hourSelect = document.getElementById('birth_hour');
-  const currentHour = parseInt(hourSelect.value);
-  const zhi = HOUR_NAMES[Math.floor((currentHour + 1) / 2) % 12];
-  hourSelect.options[hourSelect.selectedIndex].text = `${zhi}时 (${currentHour}:00-${currentHour}:59)`;
-}
-
-initHourSelect();
-
-document.getElementById('birth_hour').addEventListener('change', function() {
-  const hour = parseInt(this.value);
-  const zhi = HOUR_NAMES[Math.floor((hour + 1) / 2) % 12];
-  this.options[this.selectedIndex].text = `${zhi}时 (${hour}:00-${hour}:59)`;
-});
+// 时辰选项的文本已内置于HTML，无需动态修改
 
 // 表单提交
 document.getElementById('reportForm').addEventListener('submit', async function(e) {
@@ -861,9 +833,13 @@ function renderReportPreview(summary, data, htmlUrl) {
   reportTitle.textContent = `${data.target_year} 投资指南`;
   reportDate.textContent = `${data.birth_date} · ${data.gender}命 · ${data.birth_place}`;
 
-  // 解析八字
-  const bazi = summary.bazi || '甲寅 乙丑 丁卯 辛亥';
-  const pillars = bazi.split(' ');
+  // 解析八字（从 astro.bazi.four_pillars 读取，不再 fallback 到假数据）
+  const fourPillars = data?.astro?.bazi?.four_pillars;
+  const bazi = fourPillars
+    ? `${fourPillars.year} ${fourPillars.month} ${fourPillars.day} ${fourPillars.hour}`
+    : '';
+  const pillars = bazi ? bazi.split(' ') : [];
+  if (pillars.length !== 4) console.error('八字格式错误:', bazi);
 
   // 解析推荐板块
   const topSectors = summary.top_sectors || [];
