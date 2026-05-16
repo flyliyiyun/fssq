@@ -161,12 +161,12 @@ class FSSQOrchestrator:
             print(f"     八字: {self._extract_bazi()}")
 
         except Exception as e:
-            print(f"  ⚠️ astro-calc 失败: {e}")
+            print(f"  ❌ astro-calc 失败: {e}")
             import traceback
             traceback.print_exc()
             self.errors.append(f"astro-calc: {e}")
-            # 使用默认结构
-            self.astro_result = self._get_default_astro()
+            # 不再静默降级到硬编码数据 — 让错误传播
+            raise RuntimeError(f"八字计算失败，无法继续。请检查 astro-calc 模块。原始错误: {e}")
 
     def _run_cosmic_trend(self):
         """Step 2: 执行cosmic-trend"""
@@ -196,12 +196,12 @@ class FSSQOrchestrator:
             print(f"     年份干支: {self.cosmic_result.get('年份干支', '?')}")
 
         except Exception as e:
-            print(f"  ⚠️ cosmic-trend 失败: {e}")
+            print(f"  ❌ cosmic-trend 失败: {e}")
             import traceback
             traceback.print_exc()
             self.errors.append(f"cosmic-trend: {e}")
-            # 使用默认结构
-            self.cosmic_result = self._get_default_cosmic()
+            # 不再静默降级到硬编码数据 — 让错误传播
+            raise RuntimeError(f"宏观分析失败，无法继续。请检查 cosmic-trend 模块。原始错误: {e}")
 
     def _normalize_astro_data(self):
         """标准化astro_calc输出，修复格式差异"""
@@ -318,9 +318,10 @@ class FSSQOrchestrator:
                 self.fusion_result["top_stocks"] = []
 
         except Exception as e:
-            print(f"  ⚠️ fusion-engine 失败: {e}")
+            print(f"  ❌ fusion-engine 失败: {e}")
             self.errors.append(f"fusion-engine: {e}")
-            self.fusion_result = self._get_default_fusion()
+            # 不再静默降级到硬编码数据 — 让错误传播
+            raise RuntimeError(f"融合引擎失败，无法继续。请检查 fusion-engine 模块。原始错误: {e}")
 
     def _run_star_hunter(self):
         """Step 4: 执行star-hunter + SnipeScore评分"""
@@ -467,134 +468,16 @@ class FSSQOrchestrator:
             return []
 
     def _get_default_astro(self):
-        """获取默认astro结构"""
-        return {
-            "user_input": self.config,
-            "bazi": {
-                "four_pillars": {"year": "甲寅", "month": "庚午", "day": "丁未", "hour": "己酉"},
-                "xiyong": {"喜用": "土", "次用": "金"},
-                "strength_breakdown": {"得令": 5, "得地": 2, "得势": -1},
-                "five_element_vector": {"木": 18, "火": 24, "土": 94, "金": 57, "水": 23},
-                "favorable": {
-                    "strength": "身旺",
-                    "用神": {"element": "土", "reason": "泄去过旺火气"},
-                    "喜神": {"element": "金", "reason": "接收食伤之气"}
-                }
-            },
-            "dayun": {
-                "current": {"gan_zhi": "丙子", "year_start": 2025, "year_end": 2035, "age_start": 50, "age_end": 60},
-                "sequence": [
-                    {"gan_zhi": "辛未", "year_start": 1975, "year_end": 1984, "age_start": 1, "age_end": 10},
-                    {"gan_zhi": "壬申", "year_start": 1985, "year_end": 1994, "age_start": 10, "age_end": 20},
-                    {"gan_zhi": "癸酉", "year_start": 1995, "year_end": 2004, "age_start": 20, "age_end": 30},
-                    {"gan_zhi": "甲戌", "year_start": 2005, "year_end": 2014, "age_start": 30, "age_end": 40},
-                    {"gan_zhi": "乙亥", "year_start": 2015, "year_end": 2024, "age_start": 40, "age_end": 50},
-                    {"gan_zhi": "丙子", "year_start": 2025, "year_end": 2035, "age_start": 50, "age_end": 60},
-                ],
-                "description": "丙子大运，火水交战"
-            },
-            "ziwei": {
-                "annual_sihua": {
-                    "sihua": [
-                        {"star": "天同", "type": "禄", "palace": "田宅宫", "impact": "天同化禄入田宅"},
-                        {"star": "天机", "type": "权", "palace": "命宫", "impact": "天机化权入命宫"},
-                        {"star": "文昌", "type": "科", "palace": "官禄宫", "impact": "文昌化科利智慧投资"},
-                        {"star": "廉贞", "type": "忌", "palace": "财帛宫", "impact": "廉贞化忌需注意投机风险"}
-                    ]
-                },
-                "favorable_elements": ["土", "金"],
-                "unfavorable_elements": ["木", "火"],
-                "key_palaces": {
-                    "命宫": {"star": "天机", "element": "木", "interpretation": "天机星聪明灵活"},
-                    "财帛宫": {"star": "武曲", "element": "金", "interpretation": "武曲星财运务实稳健"}
-                },
-                "five_element_vector": {"木": 35, "火": 40, "土": 75, "金": 65, "水": 50}
-            },
-            "qimen": {
-                "value_star": "天芮星",
-                "value_star_element": "土",
-                "value_star_impact": "主医药、地产、教育",
-                "value_gate": "死门",
-                "value_gate_element": "土",
-                "value_gate_impact": "死门值使，全年偏保守",
-                "eight_gates_seasonal": {
-                    "春季(2-4月)": {"gates": ["生门"], "score": 1.10, "action": "适度操作"},
-                    "夏季(5-7月)": {"gates": ["景门", "白虎"], "score": 0.56, "action": "极度谨慎"},
-                    "秋季(8-10月)": {"gates": ["开门", "休门"], "score": 1.20, "action": "大胆进攻"},
-                    "冬季(11-1月)": {"gates": ["休门", "生门"], "score": 1.00, "action": "正常持有"}
-                }
-            },
-            "astrology": {
-                "natal": {
-                    "sun": {"sign": "巨蟹座", "interpretation": "投资风格重安全感"},
-                    "moon": {"sign": "天蝎座", "interpretation": "直觉敏锐，适合深度研究"},
-                    "rising": {"sign": "天秤座", "interpretation": "审美偏好金融类资产"}
-                },
-                "transit": {
-                    "木星": {"sign": "巨蟹座", "impact": "木星过太阳星座，财运年！"},
-                    "土星": {"sign": "白羊座", "impact": "新领域承压"}
-                }
-            },
-            "astro_vector": {"木": 25, "火": 30, "土": 80, "金": 60, "水": 55}
-        }
+        """获取默认astro结构 — 此方法不应被调用，调用即报错"""
+        raise NotImplementedError("_get_default_astro() 不应被调用。请修复 astro-calc 模块。")
 
     def _get_default_cosmic(self):
-        """获取默认cosmic结构"""
-        return {
-            "年份干支": "丙午",
-            "yearly_ganzhi": "丙午",
-            "九运": "九紫离火运(2024-2043)",
-            "nine_star_cycle": "九紫离火运",
-            "macro_five_element": {"vector": {"木": 23, "火": 95, "土": 75, "金": 30, "水": 20}},
-            "planetary_transits": {
-                "mercury_retrograde": [
-                    {"period": "4月18日-5月12日", "season": "春季", "advice": "水逆影响思考"}
-                ]
-            },
-            "quarterly_modifier": {
-                "春季": {"action": "稳健布局", "factor": 1.10},
-                "夏季": {"action": "极度谨慎", "factor": 0.56},
-                "秋季": {"action": "大胆进攻", "factor": 1.20},
-                "冬季": {"action": "正常持有", "factor": 1.00}
-            }
-        }
+        """获取默认cosmic结构 — 此方法不应被调用，调用即报错"""
+        raise NotImplementedError("_get_default_cosmic() 不应被调用。请修复 cosmic-trend 模块。")
 
     def _get_default_fusion(self):
-        """获取默认fusion结构"""
-        return {
-            "fused_five_element": {
-                "vector": {"木": 20, "火": 25, "土": 25, "金": 20, "水": 10},
-                "dominant": "土"
-            },
-            "recommended_sectors": [
-                {"rank": 1, "name": "房地产", "score": 78.5, "reason": "土金属性"},
-                {"rank": 2, "name": "建筑建材", "score": 75.2, "reason": "土金共振"},
-                {"rank": 3, "name": "银行", "score": 72.0, "reason": "土金双属性"}
-            ],
-            "forbidden_sectors": [
-                {"name": "军工", "score": 25.0, "reason": "火行忌神主导"},
-                {"name": "半导体AI", "score": 28.0, "reason": "忌神年"}
-            ],
-            "monthly_analysis": [
-                {"month": 1, "gan_zhi": "己丑", "dominant_element": "土", "action": "🟢 积极买入", "timing": "buy"},
-                {"month": 2, "gan_zhi": "庚寅", "dominant_element": "金", "action": "🟢 稳健布局", "timing": "hold"},
-                {"month": 3, "gan_zhi": "辛卯", "dominant_element": "金", "action": "🟢 稳健布局", "timing": "hold"},
-                {"month": 4, "gan_zhi": "壬辰", "dominant_element": "水", "action": "🔵 持有观望", "timing": "hold"},
-                {"month": 5, "gan_zhi": "癸巳", "dominant_element": "火", "action": "⚫ 回避空仓", "timing": "avoid"},
-                {"month": 6, "gan_zhi": "甲午", "dominant_element": "火", "action": "⚫ 回避空仓", "timing": "avoid"},
-                {"month": 7, "gan_zhi": "乙未", "dominant_element": "火", "action": "⚫ 回避空仓", "timing": "avoid"},
-                {"month": 8, "gan_zhi": "丙申", "dominant_element": "金", "action": "🟢 积极买入", "timing": "buy"},
-                {"month": 9, "gan_zhi": "丁酉", "dominant_element": "金", "action": "🟢 积极买入", "timing": "buy"},
-                {"month": 10, "gan_zhi": "戊戌", "dominant_element": "土", "action": "🟢 积极买入", "timing": "buy"},
-                {"month": 11, "gan_zhi": "己亥", "dominant_element": "水", "action": "🔵 持有观望", "timing": "hold"},
-                {"month": 12, "gan_zhi": "庚子", "dominant_element": "金", "action": "🟢 稳健布局", "timing": "hold"}
-            ],
-            "input_summary": {
-                "xiyong": {"primary": "土", "secondary": "金"},
-                "avoid": ["木", "火"]
-            },
-            "top_stocks": []
-        }
+        """获取默认fusion结构 — 此方法不应被调用，调用即报错"""
+        raise NotImplementedError("_get_default_fusion() 不应被调用。请修复 fusion-engine 模块。")
 
 
 # ============================================================

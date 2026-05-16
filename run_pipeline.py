@@ -84,7 +84,6 @@ def load_agents():
         status["astro-calc"] = ("ok", AstroCalc)
     except ImportError as e:
         status["astro-calc"] = ("fail", str(e))
-        status["astro-calc"] = ("ok", None)  # 降级运行
 
     # Agent 2: cosmic-trend
     try:
@@ -264,85 +263,15 @@ DEFAULT_ASTROLOGY = {
 
 
 def get_default_astro(config, target_year):
-    return {
-        "user_input": config,
-        "bazi": DEFAULT_BAZI,
-        "dayun": DEFAULT_DAYUN,
-        "ziwei": DEFAULT_ZIWEI,
-        "qimen": DEFAULT_QIMEN,
-        "astrology": DEFAULT_ASTROLOGY,
-        "astro_vector": {"木": 25, "火": 30, "土": 80, "金": 60, "水": 55},
-        "qimen_vector": {"木": 30, "火": 25, "土": 85, "金": 70, "水": 40},
-    }
+    raise NotImplementedError("get_default_astro() 不应被调用。请修复 astro-calc 模块。")
 
 
 def get_default_cosmic():
-    return {
-        "年份干支": "丙午",
-        "yearly_ganzhi": {"gan_zhi": "丙午", "heavenly_stem": "丙", "earthly_branch": "午",
-                           "stem_element": "火", "branch_element": "火"},
-        "九运": "九紫离火运(2024-2043)",
-        "nine_star_cycle": {"name": "九紫离火运", "years": "2024-2043", "element": "火"},
-        "macro_five_element": {
-            "vector": {"木": 23, "火": 95, "土": 75, "金": 30, "水": 20},
-            "status": {
-                "木": {"score": 23, "trend": "休"}, "火": {"score": 95, "trend": "旺"},
-                "土": {"score": 75, "trend": "相"}, "金": {"score": 30, "trend": "囚"},
-                "水": {"score": 20, "trend": "死"},
-            }
-        },
-        "planetary_transits": {
-            "木星": {"sign": "巨蟹座", "impact": "木星入巨蟹，消费/地产/金融受益", "invest_advice": "关注大消费、金融、家电板块"},
-            "土星": {"sign": "白羊座", "impact": "土星过白羊，传统行业承压", "invest_advice": "避免重仓传统制造业"},
-            "天王星": {"sign": "双子座", "impact": "天王星在双子，通信/传媒/AI技术持续活跃", "invest_advice": "关注AI、半导体、通信设备"},
-            "冥王星": {"sign": "水瓶座", "impact": "冥王星水瓶(2024-2043)，科技革命长周期", "invest_advice": "科技板块战略性配置"},
-        },
-        "quarterly_modifier": {
-            "春季": {"action": "稳健布局", "factor": 1.10},
-            "夏季": {"action": "极度谨慎", "factor": 0.56},
-            "秋季": {"action": "大胆进攻", "factor": 1.20},
-            "冬季": {"action": "正常持有", "factor": 1.00},
-        },
-        "policy": {
-            "theme": "新质生产力 + 科技自立",
-            "directions": [
-                {"sector": "AI大模型", "policy": "人工智能+战略", "weight": 0.15, "description": "国产大模型扶持"},
-                {"sector": "半导体", "policy": "自主可控", "weight": 0.12, "description": "高端芯片国产替代"},
-                {"sector": "新能源", "policy": "双碳目标", "weight": 0.10, "description": "光伏/储能/电动车"},
-            ]
-        },
-    }
+    raise NotImplementedError("get_default_cosmic() 不应被调用。请修复 cosmic-trend 模块。")
 
 
 def get_default_fusion():
-    return {
-        "fused_five_element": {"vector": {"木": 20, "火": 25, "土": 25, "金": 20, "水": 10}, "dominant": "土"},
-        "recommended_sectors": [
-            {"rank": 1, "name": "房地产", "score": 78.5, "reason": "土金属性"},
-            {"rank": 2, "name": "建筑建材", "score": 75.2, "reason": "土金共振"},
-            {"rank": 3, "name": "银行", "score": 72.0, "reason": "土金双属性"},
-        ],
-        "forbidden_sectors": [
-            {"name": "军工", "score": 25.0, "reason": "火行忌神主导"},
-            {"name": "半导体AI", "score": 28.0, "reason": "忌神年"},
-        ],
-        "monthly_analysis": [
-            {"month": 1, "gan_zhi": "己丑", "dominant_element": "土", "action": "🟢 积极买入", "timing": "buy"},
-            {"month": 2, "gan_zhi": "庚寅", "dominant_element": "金", "action": "🟢 稳健布局", "timing": "hold"},
-            {"month": 3, "gan_zhi": "辛卯", "dominant_element": "金", "action": "🟢 稳健布局", "timing": "hold"},
-            {"month": 4, "gan_zhi": "壬辰", "dominant_element": "水", "action": "🔵 持有观望", "timing": "hold"},
-            {"month": 5, "gan_zhi": "癸巳", "dominant_element": "火", "action": "⚫ 回避空仓", "timing": "avoid"},
-            {"month": 6, "gan_zhi": "甲午", "dominant_element": "火", "action": "⚫ 回避空仓", "timing": "avoid"},
-            {"month": 7, "gan_zhi": "乙未", "dominant_element": "火", "action": "⚫ 回避空仓", "timing": "avoid"},
-            {"month": 8, "gan_zhi": "丙申", "dominant_element": "金", "action": "🟢 积极买入", "timing": "buy"},
-            {"month": 9, "gan_zhi": "丁酉", "dominant_element": "金", "action": "🟢 积极买入", "timing": "buy"},
-            {"month": 10, "gan_zhi": "戊戌", "dominant_element": "土", "action": "🟢 积极买入", "timing": "buy"},
-            {"month": 11, "gan_zhi": "己亥", "dominant_element": "水", "action": "🔵 持有观望", "timing": "hold"},
-            {"month": 12, "gan_zhi": "庚子", "dominant_element": "金", "action": "🟢 稳健布局", "timing": "hold"},
-        ],
-        "input_summary": {"xiyong": {"primary": "土", "secondary": "金"}, "avoid": ["木", "火"]},
-        "top_stocks": [],
-    }
+    raise NotImplementedError("get_default_fusion() 不应被调用。请修复 fusion-engine 模块。")
 
 
 # ══════════════════════════════════════════════════════════
@@ -430,10 +359,7 @@ def run_pipeline(config, use_snipe=True, verbose=True):
             if verbose:
                 print(f"  ❌ 失败: {e}")
     if not astro_result:
-        astro_result = get_default_astro(config, config.get("target_year", 2026))
-        errors.append("astro-calc: 使用默认数据（计算引擎不可用）")
-        if verbose:
-            print(f"  ⚠️ 使用默认数据")
+        raise RuntimeError(f"八字计算引擎不可用: astro-calc导入失败，无法静默降级。错误: {errors[-1] if errors else 'unknown'}")
 
     # ── Step 2: cosmic-trend ────────────────────────────
     if verbose:
@@ -457,10 +383,7 @@ def run_pipeline(config, use_snipe=True, verbose=True):
             if verbose:
                 print(f"  ❌ 失败: {e}")
     if not cosmic_result:
-        cosmic_result = get_default_cosmic()
-        errors.append("cosmic-trend: 使用默认数据")
-        if verbose:
-            print(f"  ⚠️ 使用默认数据")
+        raise RuntimeError(f"宏观分析引擎不可用: cosmic-trend 失败，无法静默降级。错误: {errors[-1] if errors else 'unknown'}")
 
     # ── Step 3: fusion-engine ───────────────────────────
     if verbose:
@@ -486,10 +409,7 @@ def run_pipeline(config, use_snipe=True, verbose=True):
             if verbose:
                 print(f"  ❌ 失败: {e}")
     if not fusion_result:
-        fusion_result = get_default_fusion()
-        errors.append("fusion-engine: 使用默认数据")
-        if verbose:
-            print(f"  ⚠️ 使用默认数据")
+        raise RuntimeError(f"融合引擎不可用: fusion-engine 失败，无法静默降级。错误: {errors[-1] if errors else 'unknown'}")
 
     # ── Step 4: star-hunter ─────────────────────────────
     if verbose:
